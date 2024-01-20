@@ -69,7 +69,7 @@ const editorDashboard = async (req, res) => {
     const local = {
         title: "WELCOME EDITOR"
     }
-    res.redirect("http://localhost:3000/dropDown")
+    res.redirect("https://student-system-ej8i.onrender.com/dropDown")
 }
 
 // controller
@@ -134,7 +134,7 @@ const controlDashboard = async (req, res) => {
     const local = {
         title: "WELCOME CONTROL"
     }
-    res.redirect("http://localhost:3000/dropDown")
+    res.redirect("https://student-system-ej8i.onrender.com/dropDown")
 }
 
 
