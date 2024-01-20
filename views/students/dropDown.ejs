@@ -1,0 +1,95 @@
+
+<style>
+
+.hide-header .header {
+  display: none;
+}
+
+  
+</style>
+<!-- logout button -->
+<form action="/logout" method="get">
+  <button class="btn btn-danger btn-sm float-right m-1">Logout <i class="bi bi-lock-fill"></i></button>
+</form>
+
+
+
+
+
+<!-- ... (rest of the page content) ... -->
+<form action="/dropDown" method="POST">
+  <!-- First dropdown for main department selection -->
+  <div class="form-group mb-4">
+    <br>
+    <label for="mainDepartment">Main Department</label>
+    <select class="form-control" id="mainDepartment" name="mainDepartment" required>
+      <option value="Electrical Engineering">Electrical Engineering</option>
+      <option value="Mechanical Engineering">Mechanical Engineering</option>
+
+      <option value="Civil Engineering">Civil Engineering</option>
+      <option value="Architecture">Architecture</option>
+      <option value="Surveying Engineering">Surveying Engineering</option>
+
+      <!-- Add more options as needed -->
+    </select>
+  </div>
+
+  <!-- Second dropdown for secondary department selection -->
+  <div class="form-group mb-4">
+    <label for="secondaryDepartment">Secondary Department</label>
+    <select class="form-control" id="secondaryDepartment" name="secondaryDepartment" required>
+      <!-- Options will be populated dynamically based on the main department selection -->
+    </select>
+  </div>
+
+  <div class="form-group mb-4">
+    <button type="submit" class="btn btn-primary">Submit Department</button>
+  </div>
+</form>
+  <!-- Add the JavaScript code here -->
+  <script>
+
+    const mainDepartmentDropdown = document.getElementById('mainDepartment');
+    const secondaryDepartmentDropdown = document.getElementById('secondaryDepartment');
+  
+    // Define the options for the secondary departments for each main department
+    const secondaryDepartmentsByMainDepartment = {
+      'Electrical Engineering': ['Electrical Power', 'Computer','Electronic and Communications'],
+      'Mechanical Engineering': ['Mechanical Power', 'Production','Mechatronics'],
+      'Civil Engineering' :['Structures','General Civil'],
+      'Architecture':['Architecture'],
+      'Surveying Engineering':['Surveying Engineering'],
+      // Add more main departments and corresponding secondary departments as needed
+    };
+  
+    // Function to update the secondary department dropdown based on the selected main department
+    function updateSecondaryDepartments() {
+      const mainDepartmentValue = mainDepartmentDropdown.value;
+      const secondaryDepartments = secondaryDepartmentsByMainDepartment[mainDepartmentValue];
+  
+      // Clear existing options
+      secondaryDepartmentDropdown.innerHTML = '';
+  
+      // Add new options
+      secondaryDepartments.forEach((secondaryDepartment) => {
+        const option = document.createElement('option');
+        option.value = secondaryDepartment;
+        option.textContent = secondaryDepartment;
+        secondaryDepartmentDropdown.appendChild(option);
+      });
+    }
+  
+    // Add event listener to update secondary departments when main department changes
+    mainDepartmentDropdown.addEventListener('change', updateSecondaryDepartments);
+  
+    // Initialize secondary department options on page load
+    updateSecondaryDepartments();
+  </script>
+
+   <script>
+    const searchForm = document.getElementById('searchForm');
+    if (searchForm) {
+      searchForm.style.display = 'none';
+    }
+  </script>
+ 

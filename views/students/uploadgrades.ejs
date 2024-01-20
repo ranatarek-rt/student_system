@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+</head>
+
+<body>
+  <h1><%= title %></h1>
+  <form action="/uploadgrades" method="post" class="px-4">
+    <div class="form-group my-4">
+      <label for="name">Name:</label>
+      <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+
+    <div class="form-group mb-4">
+      <label for="department">Department</label>
+      <select class="form-control" id="department" name="department" required>
+        <% for (const department of departments) { %>
+          <option value="<%= department %>"><%= department %></option>
+        <% } %>
+      </select>
+    </div>
+
+    <div class="form-group mb-4">
+      <label for="subDepartment">Sub-Department:</label>
+      <select class="form-control" id="subDepartment" name="subDepartment" required>
+        <option value="" disabled selected>Select Sub-Department</option>
+        <!-- Loop through the keys of subDepartments (main departments) and populate the options -->
+        <% for (const mainDepartment of Object.keys(subDepartments)) { %>
+          <optgroup label="<%= mainDepartment %>">
+            <% const subDeps = subDepartments[mainDepartment]; %>
+            <!-- Loop through the sub-departments array and populate the options -->
+            <% for (const subDepartment of subDeps) { %>
+              <option value="<%= subDepartment %>"><%= subDepartment %></option>
+            <% } %>
+          </optgroup>
+        <% } %>
+      </select>
+    </div>
+
+    <div class="form-group my-4">
+      <label for="type">Type:</label>
+      <select id="type" name="type" class="form-control" required>
+        <option value="تمهيدي">تمهيدي</option>
+        <option value="ماجستير الهندسه">ماجستير الهندسه</option>
+        <option value="ماجستير العلوم">ماجستير العلوم</option>
+        <option value="دكتوراه">دكتوراه</option>
+      </select>
+    </div>
+
+    <div id="coursesContainer">
+      <!-- Course inputs will be dynamically added here -->
+    </div>
+
+    <div class="form-group my-4">
+      <div class="d-grid gap-2">
+        <button type="button" onclick="addCourse()" class="btn btn-primary">Add Course</button>
+      </div>
+    </div>
+
+    <div class="form-group my-4">
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">Create Student</button>
+      </div>
+    </div>
+  </form>
+
+  <script>
+    function fetchCourses(courseIndex) {
+      const department = document.getElementById('department').value;
+      const subDepartment = document.getElementById('subDepartment').value;
+
+      fetch(`/api/courses?department=${department}&subDepartment=${subDepartment}`)
+        .then((response) => response.json())
+        .then((data) => {
+          const selectElement = document.getElementsByName(`courses[${courseIndex}][name]`)[0];
+          selectElement.innerHTML = '';
+          data.courses.forEach((course) => {
+            const option = document.createElement('option');
+            option.value = course.name;
+            option.textContent = course.name;
+            selectElement.appendChild(option);
+          });
+        })
+        .catch((error) => {
+          console.error('Error fetching courses:', error);
+        });
+    }
+
+    function handleDepartmentChange() {
+      const coursesContainer = document.getElementById('coursesContainer');
+      const courseSections = coursesContainer.children;
+      for (let i = 0; i < courseSections.length; i++) {
+        fetchCourses(i);
+      }
+    }
+
+    document.getElementById('department').addEventListener('change', handleDepartmentChange);
+    document.getElementById('subDepartment').addEventListener('change', handleDepartmentChange);
+
+    function addCourse() {
+      const coursesContainer = document.getElementById('coursesContainer');
+      const courseIndex = coursesContainer.children.length;
+
+      const newCourseDiv = document.createElement('div');
+      newCourseDiv.innerHTML = `
+        <div class="form-group my-4">
+          <label for="courseName">Course Name:</label>
+          <select name="courses[${courseIndex}][name]" class="form-control" required>
+            <option value="" disabled selected>Select Course</option>
+          </select>
+        </div>
+
+        <div class="form-group my-4">
+          <label for="courseHours">Course Hours:</label>
+          <input type="number" name="courses[${courseIndex}][c_hours]" class="form-control" required>
+        </div>
+
+        <div class="form-group my-4">
+          <label for="courseYearWorks">Year Works:</label>
+          <input type="number" name="courses[${courseIndex}][year_works]" class="form-control" required>
+        </div>
+
+        <div class="form-group my-4">
+          <label for="courseOralP">Oral P:</label>
+          <input type="number" name="courses[${courseIndex}][oral_p]" class="form-control" required>
+        </div>
+
+        <div class="form-group my-4">
+          <label for="courseWritten">Written:</label>
+          <input type="number" name="courses[${courseIndex}][written]" class="form-control" required>
+        </div>
+
+        <div class="form-group my-4">
+          <label for="courseTotalDegree">Course Total Degree:</label>
+          <input type="number" name="courses[${courseIndex}][course_total_degree]" class="form-control" required>
+        </div>
+      `;
+      coursesContainer.appendChild(newCourseDiv);
+
+      fetchCourses(courseIndex); // Fetch courses for the newly added section
+    }
+  </script>
+</body>
+
+</html>
+
+<script>
+  const searchForm = document.getElementById('searchForm');
+  if (searchForm) {
+    searchForm.style.display = 'none';
+  }
+</script>
